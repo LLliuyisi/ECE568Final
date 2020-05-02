@@ -1,4 +1,5 @@
-﻿<!doctype html>
+
+<!doctype html>
 <html lang="en">
 
 <head>
@@ -6,15 +7,15 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='assets/vendor/bootstrap/css/bootstrap.min.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='assets/vendor/fonts/circular-std/style.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='assets/libs/css/style.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='assets/vendor/fonts/fontawesome/css/fontawesome-all.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='assets/vendor/charts/chartist-bundle/chartist.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='assets/vendor/charts/morris-bundle/morris.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='assets/vendor/fonts/material-design-iconic-font/css/materialdesignicons.min.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='assets/vendor/charts/c3charts/c3.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='assets/vendor/fonts/flag-icon-css/flag-icon.min.css') }}">
+    <link rel="stylesheet" href="assets/vendor/bootstrap/css/bootstrap.min.css">
+    <link href="assets/vendor/fonts/circular-std/style.css" rel="stylesheet">
+    <link rel="stylesheet" href="assets/libs/css/style.css">
+    <link rel="stylesheet" href="assets/vendor/fonts/fontawesome/css/fontawesome-all.css">
+    <link rel="stylesheet" href="assets/vendor/charts/chartist-bundle/chartist.css">
+    <link rel="stylesheet" href="assets/vendor/charts/morris-bundle/morris.css">
+    <link rel="stylesheet" href="assets/vendor/fonts/material-design-iconic-font/css/materialdesignicons.min.css">
+    <link rel="stylesheet" href="assets/vendor/charts/c3charts/c3.css">
+    <link rel="stylesheet" href="assets/vendor/fonts/flag-icon-css/flag-icon.min.css">
     <title>Stock Price Prediction System</title>
 </head>
 
@@ -32,6 +33,7 @@
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
+
             </nav>
         </div>
         <!-- ============================================================== -->
@@ -60,7 +62,7 @@
                                             <a class="nav-link" href="index.html">FB</a>
                                         </li>
                                         <li class="nav-item">
-                                            <a class="nav-link" href="index.html">MSFT</a>
+                                            <a class="nav-link" href="index.html" >MSFT</a>
                                         </li>
                                         <li class="nav-item">
                                             <a class="nav-link" href="index.html">AMZN</a>
@@ -121,12 +123,14 @@
                                         <li class="nav-item">
                                             <a class="nav-link" href="portfolio.html">Stock Portfolio</a>
                                         </li>
+
                                     </ul>
                                 </div>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" href="login.html">Logout</a>
                             </li>
+
                         </ul>
                     </div>
                 </nav>
@@ -153,7 +157,7 @@
                                     <nav aria-label="breadcrumb">
                                         <ol class="breadcrumb">
                                             <li class="breadcrumb-item"><a href="#" class="breadcrumb-link">Portfolio</a></li>
-                                            <li class="breadcrumb-item active" aria-current="page">your favorate stocks</li>
+                                            <li class="breadcrumb-item active" aria-current="page">your favorite stocks</li>
                                         </ol>
                                     </nav>
                                 </div>
@@ -164,20 +168,22 @@
                     <!-- end pageheader  -->
                     <!-- ============================================================== -->
                     <div class="ecommerce-widget">
+
                         <div class="row">
                             <!-- ============================================================== -->
+
                             <!-- ============================================================== -->
-                            <!-- recent orders  -->
+
+                                          <!-- recent orders  -->
                             <!-- ============================================================== -->
                             <div class="col-xl-9 col-lg-12 col-md-6 col-sm-12 col-12">
                                 <div class="card">
-                                    <h5 class="card-header">Your Chose Stocks</h5>
+                                    <h5 class="card-header">Your Chosen Stocks</h5>
                                     <div class="card-body p-0">
                                         <div class="table-responsive">
                                             <table class="table">
                                                 <thead class="bg-light">
                                                     <tr class="border-0">
-                                                        <th class="border-0">#</th>
                                                         <th class="border-0">Company Name</th>
                                                         <th class="border-0">Company Id</th>
                                                         <th class="border-0">Lastest Price</th>
@@ -185,51 +191,25 @@
                                                         <th class="border-0">Real-time Data</th>
                                                         <th class="border-0">Predictions</th>
                                                         <th class="border-0">Indicators</th>
+                                                        <th class="border-0">Operation</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
+                                                   <!-- {% for row in data %} -->
                                                     <tr>
-                                                        <td>1</td>
-                                                        <td>FB</td>
-                                                        <td>id0001 </td>
-                                                        <td>$80.00</td>
-                                                        <td><a href="historical.html">historical</a></td>
-                                                        <td><a href="realtime.html">real-time</a></td>
-                                                        <td><a href="predictions.html">predictions</a></td>
-                                                        <td><a href="indicators.html">indicators</a></td>
-                                                    </tr>
-                                                    <tr>
+                                                        <td>APPL</td>
                                                         <td>2</td>
-                                                        <td>MSFT</td>
-                                                        <td>id0002 </td>
-                                                        <td>$180.00</td>
+                                                        <td>102</td>
                                                         <td><a href="historical.html">historical</a></td>
                                                         <td><a href="realtime.html">real-time</a></td>
                                                         <td><a href="predictions.html">predictions</a></td>
                                                         <td><a href="indicators.html">indicators</a></td>
+                                                        <td><a href="#">Delete</a></td>
                                                     </tr>
+                                                   <!--{% endfor %} -->
+
                                                     <tr>
-                                                        <td>3</td>
-                                                        <td>AMZN</td>
-                                                        <td>id0003 </td>
-                                                        <td>$820.00</td>
-                                                        <td><a href="historical.html">historical</a></td>
-                                                        <td><a href="realtime.html">real-time</a></td>
-                                                        <td><a href="predictions.html">predictions</a></td>
-                                                        <td><a href="indicators.html">indicators</a></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>4</td>
-                                                        <td>GOOG</td>
-                                                        <td>id0004 </td>
-                                                        <td>$340.00</td>
-                                                        <td><a href="historical.html">historical</a></td>
-                                                        <td><a href="realtime.html">real-time</a></td>
-                                                        <td><a href="predictions.html">predictions</a></td>
-                                                        <td><a href="indicators.html">indicators</a></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td colspan="9"><a href="index.html" class="btn btn-outline-light float-right">Go Back</a></td>
+                                                        <td colspan="9"><a href="revise.html" class="btn btn-outline-light float-right">Add</a></td>
                                                     </tr>
                                                 </tbody>
                                             </table>
@@ -240,10 +220,13 @@
                             <!-- ============================================================== -->
                             <!-- end recent orders  -->
 
+
                         </div>
+
                     </div>
                 </div>
             </div>
+
         </div>
         <!-- ============================================================== -->
         <!-- end wrapper  -->
@@ -254,25 +237,25 @@
     <!-- ============================================================== -->
     <!-- Optional JavaScript -->
     <!-- jquery 3.3.1 -->
-    <script src="{{ url_for('static', filename='assets/vendor/jquery/jquery-3.3.1.min.js') }}"></script>
+    <script src="assets/vendor/jquery/jquery-3.3.1.min.js"></script>
     <!-- bootstap bundle js -->
-    <script src="{{ url_for('static', filename='assets/vendor/bootstrap/js/bootstrap.bundle.js') }}"></script>
+    <script src="assets/vendor/bootstrap/js/bootstrap.bundle.js"></script>
     <!-- slimscroll js -->
-    <script src="{{ url_for('static', filename='assets/vendor/slimscroll/jquery.slimscroll.js') }}"></script>
+    <script src="assets/vendor/slimscroll/jquery.slimscroll.js"></script>
     <!-- main js -->
-    <script src="{{ url_for('static', filename='assets/libs/js/main-js.js') }}"></script>
+    <script src="assets/libs/js/main-js.js"></script>
     <!-- chart chartist js -->
-    <script src="{{ url_for('static', filename='assets/vendor/charts/chartist-bundle/chartist.min.js') }}"></script>
+    <script src="assets/vendor/charts/chartist-bundle/chartist.min.js"></script>
     <!-- sparkline js -->
-    <script src="{{ url_for('static', filename='assets/vendor/charts/sparkline/jquery.sparkline.js') }}"></script>
+    <script src="assets/vendor/charts/sparkline/jquery.sparkline.js"></script>
     <!-- morris js -->
-    <script src="{{ url_for('static', filename='assets/vendor/charts/morris-bundle/raphael.min.js') }}"></script>
-    <script src="{{ url_for('static', filename='assets/vendor/charts/morris-bundle/morris.js') }}"></script>
+    <script src="assets/vendor/charts/morris-bundle/raphael.min.js"></script>
+    <script src="assets/vendor/charts/morris-bundle/morris.js"></script>
     <!-- chart c3 js -->
-    <script src="{{ url_for('static', filename='assets/vendor/charts/c3charts/c3.min.js') }}"></script>
-    <script src="{{ url_for('static', filename='assets/vendor/charts/c3charts/d3-5.4.0.min.js') }}"></script>
-    <script src="{{ url_for('static', filename='assets/vendor/charts/c3charts/C3chartjs.js') }}"></script>
-    <script src="{{ url_for('static', filename='assets/libs/js/dashboard-ecommerce.js') }}"></script>
+    <script src="assets/vendor/charts/c3charts/c3.min.js"></script>
+    <script src="assets/vendor/charts/c3charts/d3-5.4.0.min.js"></script>
+    <script src="assets/vendor/charts/c3charts/C3chartjs.js"></script>
+    <script src="assets/libs/js/dashboard-ecommerce.js"></script>
 </body>
 
 </html>
