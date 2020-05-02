@@ -3,7 +3,7 @@ from app import app, db
 from app.forms import LoginForm, RegistrationForm
 from flask import render_template, flash, redirect, url_for
 from flask_login import current_user, login_user, logout_user, login_required
-from app.models import User
+from app.models import User, Portfolio
 from werkzeug.urls import url_parse
 from sqlalchemy.sql import text
 import pymysql.cursors
@@ -70,7 +70,25 @@ def predictions():
 
 @app.route('/portfolio.html')
 def portfolio():
-    return render_template('portfolio.html')
+    connection = pymysql.connect(host='localhost',
+                                 user='root',
+                                 passwd='123',
+                                 db='mydb',
+                                 port=3306,
+                                 cursorclass=pymysql.cursors.DictCursor)
+
+    q = 'SELECT stockname FROM Portfolio WHERE userid = ' + current_user.get_id();
+    cur = connection.cursor()
+    cur.execute(q)
+    result = cur.fetchall()
+    stocks = []
+    for row in result:
+        if row['stockname'] == 'BRKB':
+            stocks.append('BRK-B')
+        else:
+            stocks.append(row['stockname'])
+
+    return render_template('portfolio.html', data = stocks)
 
 @app.route('/indicators.html')
 def indicators():
@@ -80,7 +98,36 @@ def indicators():
 def historical():
     return render_template('historical.html')
 
+@app.route('/revise.html', methods=['GET', 'POST'])
+def revise():
+    if request.method == 'POST':
+        newStock = request.form.get('newStockName')
+        if newStock == 'BRK-B':
+            newStock = 'BRKB'
+        stocks = ['FB', 'MSFT', 'AMZN', 'GOOG', 'BRKB', 'AAPL', 'GE', 'UBER', 'SBUX', 'COKE']
+        if newStock not in stocks:
+            return render_template('error.html')
 
+        connection = pymysql.connect(host='localhost',
+                                     user='root',
+                                     passwd='123',
+                                     db='mydb',
+                                     port=3306,
+                                     cursorclass=pymysql.cursors.DictCursor)
+        
+        q = 'SELECT stockname FROM Portfolio WHERE userid = ' + current_user.get_id();
+        cur = connection.cursor()
+        cur.execute(q)
+        result = cur.fetchall()
+
+        for row in result:
+            if row['stockname'] == newStock:
+                return render_template('error.html')
+        portfolio = Portfolio(userid = current_user.get_id(), stockname = newStock)
+        db.session.add(portfolio)
+        db.session.commit()
+        return render_template('success.html')
+    return render_template('revise.html')
 
 
 '''
