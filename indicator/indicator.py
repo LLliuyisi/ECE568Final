@@ -4,10 +4,10 @@
 # python3
 
 """
-Get three kinds of indicators (ROC, OBV, MACD) and save them into csv file.
+Get three kinds of indicators (ROC, OBV, MACD) and insert them into database.
 
 """
-
+import pymysql, csv
 from alpha_vantage.techindicators import TechIndicators
 import matplotlib.pyplot as plt
 import json, time
@@ -16,7 +16,7 @@ import json, time
 def ROCIndicator(StockName):
     ti = TechIndicators(key='GKLC3DF23TMWX8LS', output_format='pandas')
     time.sleep(15)  # The alpha_ventage API limit 5 calls per minute
-    data, meta_data = ti.get_roc(symbol=StockName, interval='1min', time_period=60, series_type='close')
+    data, meta_data = ti.get_roc(symbol=StockName, interval='daily', series_type='close')
     # realdata = data.to_json(orient='table')
     # print(realdata)
 
@@ -35,13 +35,15 @@ def ROCIndicator(StockName):
     # plt.show()
     data.to_csv(StockName + '_ROC.csv', index=True, sep=',')
 
-    print('Success')
+    print(StockName + '_ROC saved successfully.')
+    insertDatabase(StockName + '_ROC')
+
 
 
 def OBVIndicator(StockName):
     ti = TechIndicators(key='GKLC3DF23TMWX8LS', output_format='pandas')
     time.sleep(15)  # The alpha_ventage API limit 5 calls per minute
-    data, meta_data = ti.get_obv(symbol=StockName, interval='1min')
+    data, meta_data = ti.get_obv(symbol=StockName, interval='daily')
     # realdata = data.to_json(orient='table')
 
     # json_path = './' + StockName +'OBV.json'
@@ -57,14 +59,14 @@ def OBVIndicator(StockName):
     # plt.show()
     data.to_csv(StockName + '_OBV.csv', index=True, sep=',')
 
-    print('Success')
-
+    print(StockName + '_OBV saved successfully.')
+    insertDatabase(StockName + '_OBV')
 
 
 def MACDIndicator(StockName):
     ti = TechIndicators(key='GKLC3DF23TMWX8LS', output_format='pandas')
     time.sleep(15)  # The alpha_ventage API limit 5 calls per minute
-    data, meta_data = ti.get_macd(symbol=StockName, interval='1min', series_type='close')
+    data, meta_data = ti.get_macd(symbol=StockName, interval='daily', series_type='close')
     # realdata = data.to_json(orient='table')
     # print(realdata)
 
@@ -80,8 +82,45 @@ def MACDIndicator(StockName):
     # plt.show()
     data.to_csv(StockName + '_MACD.csv', index=True, sep=',')
 
-    print('Success')
+    print(StockName + '_MACD saved successfully.')
+    insertDatabase(StockName + '_MACD')
 
+def insertDatabase(com):
+    connection = pymysql.connect(host='localhost',
+                                 user='xiaoliu',
+                                 passwd='123',
+                                 db='stocks',
+                                 port=3306,
+                                 cursorclass=pymysql.cursors.DictCursor)
+    try:
+        with connection.cursor() as cursor:
+            cursor.execute("DROP TABLE IF EXISTS " + com + ";")
+            sql = """
+                    CREATE TABLE """ + com + """ (
+			        time varchar(30) NOT NULL,
+			        indicator varchar(15) ,
+                    PRIMARY KEY (time))
+			        ENGINE = InnoDB;"""
+            cursor.execute(sql)
+            print('Table ' + com + 'created successfully.')
+
+            csv_reader = csv.reader(open(com + '.csv', encoding='utf-8'))
+            flag = 0
+            for row in csv_reader:
+                if flag != 0:
+                    ROWstr = ''
+                    ROWstr = (ROWstr + '"%s"' + ',') % (row[0])
+                    ROWstr = (ROWstr + '"%s"' + ',') % (row[1])
+                    cursor.execute("INSERT INTO %s VALUES (%s)" % (com, ROWstr[:-1]))
+                flag = flag + 1
+            print('Table' + com + ' data inserted successfully.')
+            connection.commit()
+    except pymysql.Error as e:
+        print('Mysql Error %d: %s' % (e.args[0], e.args[1]))
+
+    finally:
+        cursor.close()
+        connection.close()
 
 def main():
     companyNameList = ["FB", "MSFT", "AMZN", "GOOG", "AAPL", "GE", "UBER", "SBUX", "COKE", "NKE"]
@@ -89,6 +128,7 @@ def main():
         ROCIndicator(com)
         OBVIndicator(com)
         MACDIndicator(com)
+
 
 
 if __name__ == '__main__':
