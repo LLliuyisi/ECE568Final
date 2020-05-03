@@ -57,18 +57,22 @@ def register():
     return render_template('register.html', title='Register', form=form)
 
 @app.route('/query.html')
+@login_required
 def query():
     return render_template('query.html')
 
 @app.route('/realtime.html')
+@login_required
 def realtime():
     return render_template('realtime.html')
 
 @app.route('/predictions.html')
+@login_required
 def predictions():
     return render_template('predictions.html')
 
-@app.route('/portfolio.html')
+@app.route('/portfolio.html', methods=['GET', 'POST'])
+@login_required
 def portfolio():
     connection = pymysql.connect(host='localhost',
                                  user='root',
@@ -88,22 +92,26 @@ def portfolio():
         else:
             stocks.append(row['stockname'])
 
-    return render_template('portfolio.html', data = stocks)
+    return render_template('portfolio.html', data = stocks, id = current_user.get_id())
 
 @app.route('/indicators.html')
+@login_required
 def indicators():
     return render_template('indicators.html')
 
 @app.route('/historical.html')
+@login_required
 def historical():
     return render_template('historical.html')
 
 @app.route('/revise.html', methods=['GET', 'POST'])
+@login_required
 def revise():
     if request.method == 'POST':
         newStock = request.form.get('newStockName')
         if newStock == 'BRK-B':
             newStock = 'BRKB'
+        
         stocks = ['FB', 'MSFT', 'AMZN', 'GOOG', 'BRKB', 'AAPL', 'GE', 'UBER', 'SBUX', 'COKE']
         if newStock not in stocks:
             return render_template('error.html')
@@ -129,7 +137,23 @@ def revise():
         return render_template('success.html')
     return render_template('revise.html')
 
-
+@app.route('/delete<company><userid>')
+@login_required
+def delete(company, userid):
+    connection = pymysql.connect(host='localhost',
+                                 user='root',
+                                 passwd='123',
+                                 db='mydb',
+                                 port=3306,
+                                 cursorclass=pymysql.cursors.DictCursor)
+    if company == 'BRK-B':
+        company = 'BRKB'
+    q = "DELETE FROM Portfolio WHERE userid = '" + userid + "' AND stockname = '" + company + "'";
+    print (q)
+    cur = connection.cursor()
+    cur.execute(q)
+    connection.commit()
+    return redirect('portfolio.html')
 '''
 @app.route('/stocks')
 @login_required
