@@ -184,7 +184,6 @@
                                                     <tr class="border-0">
                                                         <th class="border-0">Company Name</th>
                                                         <th class="border-0">Company Id</th>
-                                                        <th class="border-0">Lastest Price</th>
                                                         <th class="border-0">Historical Data</th>
                                                         <th class="border-0">Real-time Data</th>
                                                         <th class="border-0">Predictions</th>
@@ -195,9 +194,8 @@
                                                 <tbody>
                                                     {% for stock in data %}
                                                     <tr>
+                                                        <td>{{companyname[stock]}}</td>
                                                         <td>{{stock}}</td>
-                                                        <td>2</td>
-                                                        <td>102</td>
                                                         <td><a href="historical.html{{stock}}">historical</a></td>
                                                         <td><a href="realtime.html{{stock}}">real-time</a></td>
                                                         <td><a href="predictions.html">predictions</a></td>

@@ -7,6 +7,7 @@ from app.models import User, Portfolio
 from werkzeug.urls import url_parse
 from sqlalchemy.sql import text
 from data.Data_Collection import getRealtime
+from datetime import date, timedelta
 import pymysql.cursors
 import pymysql
 import csv
@@ -14,12 +15,19 @@ import time
 
 import plotly.graph_objects as go
 
+
+company_names = {'FB': 'Facebook', 'MSFT': 'Microsoft', 'AMZN': 'Amazon', 'GOOG': 'Google',
+                 'BRKB': 'Berkshire Hathaway', 'BRK-B': 'Berkshire Hathaway', 'AAPL': 'Apple',
+                 'GE': 'General Electric', 'UBER': 'Uber', 'SBUX': 'Starbucks', 'COKE': 'Coca-Cola'}
+
+
+
 @app.route('/')
 @app.route('/index.html')
 @login_required
 def index():
 
-    return render_template('index.html')
+    return render_template('index.html', companyname = company_names)
 
 @app.route('/login.html', methods=['GET', 'POST'])
 def login():
@@ -60,7 +68,57 @@ def register():
 @app.route('/query.html')
 @login_required
 def query():
-    return render_template('query.html')
+
+
+
+    data = {'FB': {},
+            'MSFT': {},
+            'AMZN': {},
+            'GOOG': {},
+            'BRKB': {},
+            'AAPL': {},
+            'GE': {},
+            'UBER': {},
+            'SBUX': {},
+            'COKE': {},
+            }
+    stocks = ['FB', 'MSFT', 'AMZN', 'GOOG', 'BRKB', 'AAPL', 'GE', 'UBER', 'SBUX', 'COKE']
+    connection = pymysql.connect(host='localhost',
+                                 user='root',
+                                 passwd='123',
+                                 db='mydb',
+                                 port=3306,
+                                 cursorclass=pymysql.cursors.DictCursor)
+    cur = connection.cursor()
+    today_10 = str(date.today() - timedelta(days=10))
+    today_365 = str(date.today() - timedelta(days=365))
+
+    for stock in stocks:
+        q = "SELECT MAX(open) FROM " + stock + "_historical where time > '" + today_10 + "'"
+        cur.execute(q)
+        result = cur.fetchone()
+        #print(result)
+        data[stock]['highest'] = float(result['MAX(open)'])
+
+        q = "select open from " + stock + "_realtime ORDER BY time DESC LIMIT 1;"
+        cur.execute(q)
+        result = cur.fetchone()
+        data[stock]['latest'] = float(result['open'])
+
+        q = "SELECT MIN(open) FROM " + stock + "_historical where time > '" + today_365 + "'"
+        cur.execute(q)
+        result = cur.fetchone()
+        data[stock]['lowest'] = float(result['MIN(open)'])
+
+        q = "SELECT avg(open) FROM " + stock + "_historical where time > '" + today_365 + "'"
+        cur.execute(q)
+        result = cur.fetchone()
+        data[stock]['average'] = round(float(result['avg(open)']), 2)
+
+    #print (data)
+
+
+    return render_template('query.html', data = data, companyname = company_names)
 
 @app.route('/realtime.html<company>')
 @login_required
@@ -123,7 +181,7 @@ def portfolio():
         else:
             stocks.append(row['stockname'])
 
-    return render_template('portfolio.html', data = stocks, id = current_user.get_id())
+    return render_template('portfolio.html', data = stocks, id = current_user.get_id(), companyname = company_names)
 
 @app.route('/indicators.html')
 @login_required

@@ -178,6 +178,8 @@
                                                 <thead class="bg-light">
                                                     <tr class="border-0">
                                                         <th class="border-0">Company Name</th>
+                                                        <th class="border-0">Company Id</th>
+                                                        <th class="border-0">Latest price</th>
                                                         <th class="border-0">Highest Price(10 days)</th>
                                                         <th class="border-0">Average Price(1y)</th>
                                                         <th class="border-0">Lowest Price(1y)</th>
@@ -186,74 +188,94 @@
                                                 </thead>
                                                 <tbody>
                                                     <tr>
+                                                        <td>{{companyname['FB']}}</td>
                                                         <td>FB</td>
-                                                        <td>102.34</td>
-                                                        <td>104.3</td>
-                                                        <td>109.1</td>
+                                                        <td>{{data['FB']['latest']}}</td>
+                                                        <td>{{data['FB']['highest']}}</td>
+                                                        <td>{{data['FB']['average']}}</td>
+                                                        <td>{{data['FB']['lowest']}}</td>
                                                         <td>UBER, COKE</td>
                                                     </tr>
                                                     <tr>
+                                                        <td>{{companyname['MSFT']}}</td>
                                                         <td>MSFT</td>
-                                                        <td>102.34</td>
-                                                        <td>104.3</td>
-                                                        <td>109.1</td>
+                                                        <td>{{data['MSFT']['latest']}}</td>
+                                                        <td>{{data['MSFT']['highest']}}</td>
+                                                        <td>{{data['MSFT']['average']}}</td>
+                                                        <td>{{data['MSFT']['lowest']}}</td>
                                                         <td>UBER, COKE</td>
                                                     </tr>
                                                     <tr>
+                                                        <td>{{companyname['AMZN']}}</td>
                                                         <td>AMZN</td>
-                                                        <td>102.34</td>
-                                                        <td>104.3</td>
-                                                        <td>109.1</td>
+                                                        <td>{{data['AMZN']['latest']}}</td>
+                                                        <td>{{data['AMZN']['highest']}}</td>
+                                                        <td>{{data['AMZN']['average']}}</td>
+                                                        <td>{{data['AMZN']['lowest']}}</td>
                                                         <td>UBER, COKE</td>
                                                     </tr>
                                                     <tr>
+                                                        <td>{{companyname['GOOG']}}</td>
                                                         <td>GOOG</td>
-                                                        <td>102.34</td>
-                                                        <td>104.3</td>
-                                                        <td>109.1</td>
+                                                        <td>{{data['GOOG']['latest']}}</td>
+                                                        <td>{{data['GOOG']['highest']}}</td>
+                                                        <td>{{data['GOOG']['average']}}</td>
+                                                        <td>{{data['GOOG']['lowest']}}</td>
                                                         <td>UBER, COKE</td>
                                                     </tr>
                                                     <tr>
+                                                        <td>{{companyname['BRKB']}}</td>
                                                         <td>BRK-B</td>
-                                                        <td>102.34</td>
-                                                        <td>104.3</td>
-                                                        <td>109.1</td>
+                                                        <td>{{data['BRKB']['latest']}}</td>
+                                                        <td>{{data['BRKB']['highest']}}</td>
+                                                        <td>{{data['BRKB']['average']}}</td>
+                                                        <td>{{data['BRKB']['lowest']}}</td>
                                                         <td>UBER, COKE</td>
                                                     </tr>
                                                     <tr>
-                                                        <td>APPL</td>
-                                                        <td>102.34</td>
-                                                        <td>104.3</td>
-                                                        <td>109.1</td>
+                                                        <td>{{companyname['AAPL']}}</td>
+                                                        <td>AAPL</td>
+                                                        <td>{{data['AAPL']['latest']}}</td>
+                                                        <td>{{data['AAPL']['highest']}}</td>
+                                                        <td>{{data['AAPL']['average']}}</td>
+                                                        <td>{{data['AAPL']['lowest']}}</td>
                                                         <td>UBER, COKE</td>
                                                     </tr>
                                                     <tr>
+                                                        <td>{{companyname['GE']}}</td>
                                                         <td>GE</td>
-                                                        <td>102.34</td>
-                                                        <td>104.3</td>
-                                                        <td>109.1</td>
+                                                        <td>{{data['GE']['latest']}}</td>
+                                                        <td>{{data['GE']['highest']}}</td>
+                                                        <td>{{data['GE']['average']}}</td>
+                                                        <td>{{data['GE']['lowest']}}</td>
                                                         <td>UBER, COKE</td>
                                                     </tr>
                                                     <tr>
+                                                        <td>{{companyname['UBER']}}</td>
                                                         <td>UBER</td>
-                                                        <td>102.34</td>
-                                                        <td>104.3</td>
-                                                        <td>109.1</td>
-                                                        <td>APPL, COKE</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>SBUX</td>
-                                                        <td>102.34</td>
-                                                        <td>104.3</td>
-                                                        <td>109.1</td>
+                                                        <td>{{data['UBER']['latest']}}</td>
+                                                        <td>{{data['UBER']['highest']}}</td>
+                                                        <td>{{data['UBER']['average']}}</td>
+                                                        <td>{{data['UBER']['lowest']}}</td>
                                                         <td>UBER, COKE</td>
                                                     </tr>
                                                     <tr>
+                                                        <td>{{companyname['SBUX']}}</td>
+                                                        <td>SBUX</td>
+                                                        <td>{{data['SBUX']['latest']}}</td>
+                                                        <td>{{data['SBUX']['highest']}}</td>
+                                                        <td>{{data['SBUX']['average']}}</td>
+                                                        <td>{{data['SBUX']['lowest']}}</td>
+                                                        <td>UBER, COKE</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>{{companyname['COKE']}}</td>
                                                         <td>COKE</td>
-                                                        <td>102.34</td>
-                                                        <td>104.3</td>
-                                                        <td>109.1</td>
-                                                        <td>UBER, GE</td>
+                                                        <td>{{data['COKE']['latest']}}</td>
+                                                        <td>{{data['COKE']['highest']}}</td>
+                                                        <td>{{data['COKE']['average']}}</td>
+                                                        <td>{{data['COKE']['lowest']}}</td>
+                                                        <td>UBER, COKE</td>
                                                     </tr>
                                                     <tr>
                                                         <td colspan="9"><a href="index.html" class="btn btn-outline-light float-right">Go Back</a></td>
