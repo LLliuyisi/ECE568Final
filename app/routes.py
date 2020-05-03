@@ -6,6 +6,7 @@ from flask_login import current_user, login_user, logout_user, login_required
 from app.models import User, Portfolio
 from werkzeug.urls import url_parse
 from sqlalchemy.sql import text
+from data.Data_Collection import getRealtime
 import pymysql.cursors
 import pymysql
 import csv
@@ -61,10 +62,40 @@ def register():
 def query():
     return render_template('query.html')
 
-@app.route('/realtime.html')
+@app.route('/realtime.html<company>')
 @login_required
-def realtime():
-    return render_template('realtime.html')
+def realtime(company):
+    if company == "BRK-B":
+        company = "BRKB"
+    data = []
+    connection = pymysql.connect(host='localhost',
+                                 user='root',
+                                 passwd='123',
+                                 db='mydb',
+                                 port=3306,
+                                 cursorclass=pymysql.cursors.DictCursor)
+
+    q = 'SELECT * FROM ' + company + '_realtime';
+    cur = connection.cursor()
+    cur.execute(q)
+    result = cur.fetchall()
+
+    for row in result:
+        temp = []
+        date, _time = row['time'].split(' ')
+        year, month, day = date.split('-')
+        hour, minute, second = _time.split(':')
+        t = (int(year), int(month), int(day), int(hour), int(minute), int(second), 0, 0, 0)
+        temp.append(int(time.mktime(t) * 1000.0))
+        temp.append(float(row['open']))
+        temp.append(float(row['high']))
+        temp.append(float(row['low']))
+        temp.append(float(row['close']))
+        data.append(temp)
+    print(data[0])
+
+
+    return render_template('realtime.html', data=data, company=company)
 
 @app.route('/predictions.html')
 @login_required
@@ -99,10 +130,37 @@ def portfolio():
 def indicators():
     return render_template('indicators.html')
 
-@app.route('/historical.html')
+@app.route('/historical.html<company>')
 @login_required
-def historical():
-    return render_template('historical.html')
+def historical(company):
+    if company == "BRK-B":
+        company = "BRKB"
+    data = []
+    connection = pymysql.connect(host='localhost',
+                                 user='root',
+                                 passwd='123',
+                                 db='mydb',
+                                 port=3306,
+                                 cursorclass=pymysql.cursors.DictCursor)
+
+    q = 'SELECT * FROM ' + company + '_historical';
+    cur = connection.cursor()
+    cur.execute(q)
+    result = cur.fetchall()
+
+    for row in result:
+        temp = []
+        year, month, day = row['time'].split('-')
+        t = (int(year), int(month), int(day), 0, 0, 0, 0, 0, 0)
+        temp.append(int(time.mktime(t) * 1000.0))
+        temp.append(float(row['open']))
+        temp.append(float(row['high']))
+        temp.append(float(row['low']))
+        temp.append(float(row['close']))
+        data.append(temp)
+    print(data[0])
+
+    return render_template('historical.html',data = data, company = company)
 
 @app.route('/revise.html', methods=['GET', 'POST'])
 @login_required
@@ -111,7 +169,7 @@ def revise():
         newStock = request.form.get('newStockName')
         if newStock == 'BRK-B':
             newStock = 'BRKB'
-        
+
         stocks = ['FB', 'MSFT', 'AMZN', 'GOOG', 'BRKB', 'AAPL', 'GE', 'UBER', 'SBUX', 'COKE']
         if newStock not in stocks:
             return render_template('error.html')
