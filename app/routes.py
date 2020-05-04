@@ -69,9 +69,6 @@ def register():
 @app.route('/query.html')
 @login_required
 def query():
-
-
-
     data = {'FB': {},
             'MSFT': {},
             'AMZN': {},
@@ -87,7 +84,7 @@ def query():
     connection = pymysql.connect(host='localhost',
                                  user='root',
                                  passwd='123',
-                                 db='mydb',
+                                 db='stocks',
                                  port=3306,
                                  cursorclass=pymysql.cursors.DictCursor)
     cur = connection.cursor()
@@ -124,13 +121,11 @@ def query():
 @app.route('/realtime.html<company>')
 @login_required
 def realtime(company):
-    if company == "BRK-B":
-        company = "BRKB"
     data = []
     connection = pymysql.connect(host='localhost',
                                  user='root',
                                  passwd='123',
-                                 db='mydb',
+                                 db='stocks',
                                  port=3306,
                                  cursorclass=pymysql.cursors.DictCursor)
 
@@ -167,7 +162,7 @@ def portfolio():
     connection = pymysql.connect(host='localhost',
                                  user='root',
                                  passwd='123',
-                                 db='mydb',
+                                 db='stocks',
                                  port=3306,
                                  cursorclass=pymysql.cursors.DictCursor)
 
@@ -194,7 +189,7 @@ def indicators(company):
     connection = pymysql.connect(host='localhost',
                                  user='root',
                                  passwd='123',
-                                 db='mydb',
+                                 db='stocks',
                                  port=3306,
                                  cursorclass=pymysql.cursors.DictCursor)
 
@@ -229,12 +224,11 @@ def indicators(company):
 @app.route('/historical.html<company>')
 @login_required
 def historical(company):
-    if company == "BRK-B":
-        company = "BRKB"
+    data = []
     connection = pymysql.connect(host='localhost',
                                  user='root',
                                  passwd='123',
-                                 db='mydb',
+                                 db='stocks',
                                  port=3306,
                                  cursorclass=pymysql.cursors.DictCursor)
 
@@ -262,8 +256,6 @@ def historical(company):
 def revise():
     if request.method == 'POST':
         newStock = request.form.get('newStockName')
-        if newStock == 'BRK-B':
-            newStock = 'BRKB'
 
         stocks = ['FB', 'MSFT', 'AMZN', 'GOOG', 'NKE', 'AAPL', 'GE', 'UBER', 'SBUX', 'COKE']
         if newStock not in stocks:
@@ -272,7 +264,7 @@ def revise():
         connection = pymysql.connect(host='localhost',
                                      user='root',
                                      passwd='123',
-                                     db='mydb',
+                                     db='stocks',
                                      port=3306,
                                      cursorclass=pymysql.cursors.DictCursor)
         
@@ -296,11 +288,10 @@ def delete(company, userid):
     connection = pymysql.connect(host='localhost',
                                  user='root',
                                  passwd='123',
-                                 db='mydb',
+                                 db='stocks',
                                  port=3306,
                                  cursorclass=pymysql.cursors.DictCursor)
-    if company == 'BRK-B':
-        company = 'BRKB'
+
     q = "DELETE FROM Portfolio WHERE userid = '" + userid + "' AND stockname = '" + company + "'";
     print (q)
     cur = connection.cursor()
