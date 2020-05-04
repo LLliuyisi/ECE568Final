@@ -194,7 +194,13 @@
                                                         <td>{{data['FB']['highest']}}</td>
                                                         <td>{{data['FB']['average']}}</td>
                                                         <td>{{data['FB']['lowest']}}</td>
-                                                        <td>UBER, COKE</td>
+                                                        <td>
+                                                            {% for key in data %}
+                                                            {% if data['FB']['average'] > data[key]['average'] %}
+                                                            {{key}}
+                                                            {% endif %}
+                                                            {% endfor %}
+                                                        </td>
                                                     </tr>
                                                     <tr>
                                                         <td>{{companyname['MSFT']}}</td>
@@ -203,7 +209,13 @@
                                                         <td>{{data['MSFT']['highest']}}</td>
                                                         <td>{{data['MSFT']['average']}}</td>
                                                         <td>{{data['MSFT']['lowest']}}</td>
-                                                        <td>UBER, COKE</td>
+                                                        <td>
+                                                            {% for key in data %}
+                                                            {% if data['MSFT']['average'] > data[key]['average'] %}
+                                                            {{key}}
+                                                            {% endif %}
+                                                            {% endfor %}
+                                                        </td>
                                                     </tr>
                                                     <tr>
                                                         <td>{{companyname['AMZN']}}</td>
@@ -212,7 +224,13 @@
                                                         <td>{{data['AMZN']['highest']}}</td>
                                                         <td>{{data['AMZN']['average']}}</td>
                                                         <td>{{data['AMZN']['lowest']}}</td>
-                                                        <td>UBER, COKE</td>
+                                                        <td>
+                                                            {% for key in data %}
+                                                            {% if data['AMZN']['average'] > data[key]['average'] %}
+                                                            {{key}}
+                                                            {% endif %}
+                                                            {% endfor %}
+                                                        </td>
                                                     </tr>
                                                     <tr>
                                                         <td>{{companyname['GOOG']}}</td>
@@ -221,7 +239,13 @@
                                                         <td>{{data['GOOG']['highest']}}</td>
                                                         <td>{{data['GOOG']['average']}}</td>
                                                         <td>{{data['GOOG']['lowest']}}</td>
-                                                        <td>UBER, COKE</td>
+                                                        <td>
+                                                            {% for key in data %}
+                                                            {% if data['GOOG']['average'] > data[key]['average'] %}
+                                                            {{key}}
+                                                            {% endif %}
+                                                            {% endfor %}
+                                                        </td>
                                                     </tr>
                                                     <tr>
                                                         <td>{{companyname['NKE']}}</td>
@@ -230,7 +254,13 @@
                                                         <td>{{data['NKE']['highest']}}</td>
                                                         <td>{{data['NKE']['average']}}</td>
                                                         <td>{{data['NKE']['lowest']}}</td>
-                                                        <td>UBER, COKE</td>
+                                                        <td>
+                                                            {% for key in data %}
+                                                            {% if data['NKE']['average'] > data[key]['average'] %}
+                                                            {{key}}
+                                                            {% endif %}
+                                                            {% endfor %}
+                                                        </td>
                                                     </tr>
                                                     <tr>
                                                         <td>{{companyname['AAPL']}}</td>
@@ -239,7 +269,13 @@
                                                         <td>{{data['AAPL']['highest']}}</td>
                                                         <td>{{data['AAPL']['average']}}</td>
                                                         <td>{{data['AAPL']['lowest']}}</td>
-                                                        <td>UBER, COKE</td>
+                                                        <td>
+                                                            {% for key in data %}
+                                                            {% if data['AAPL']['average'] > data[key]['average'] %}
+                                                            {{key}}
+                                                            {% endif %}
+                                                            {% endfor %}
+                                                        </td>
                                                     </tr>
                                                     <tr>
                                                         <td>{{companyname['GE']}}</td>
@@ -248,7 +284,13 @@
                                                         <td>{{data['GE']['highest']}}</td>
                                                         <td>{{data['GE']['average']}}</td>
                                                         <td>{{data['GE']['lowest']}}</td>
-                                                        <td>UBER, COKE</td>
+                                                        <td>
+                                                            {% for key in data %}
+                                                            {% if data['GE']['average'] > data[key]['average'] %}
+                                                            {{key}}
+                                                            {% endif %}
+                                                            {% endfor %}
+                                                        </td>
                                                     </tr>
                                                     <tr>
                                                         <td>{{companyname['UBER']}}</td>
@@ -257,7 +299,13 @@
                                                         <td>{{data['UBER']['highest']}}</td>
                                                         <td>{{data['UBER']['average']}}</td>
                                                         <td>{{data['UBER']['lowest']}}</td>
-                                                        <td>UBER, COKE</td>
+                                                        <td>
+                                                            {% for key in data %}
+                                                            {% if data['UBER']['average'] > data[key]['average'] %}
+                                                            {{key}}
+                                                            {% endif %}
+                                                            {% endfor %}
+                                                        </td>
                                                     </tr>
                                                     <tr>
                                                         <td>{{companyname['SBUX']}}</td>
@@ -266,7 +314,13 @@
                                                         <td>{{data['SBUX']['highest']}}</td>
                                                         <td>{{data['SBUX']['average']}}</td>
                                                         <td>{{data['SBUX']['lowest']}}</td>
-                                                        <td>UBER, COKE</td>
+                                                        <td>
+                                                            {% for key in data %}
+                                                            {% if data['SBUX']['average'] > data[key]['average'] %}
+                                                            {{key}}
+                                                            {% endif %}
+                                                            {% endfor %}
+                                                        </td>
                                                     </tr>
                                                     <tr>
                                                         <td>{{companyname['COKE']}}</td>
@@ -275,7 +329,13 @@
                                                         <td>{{data['COKE']['highest']}}</td>
                                                         <td>{{data['COKE']['average']}}</td>
                                                         <td>{{data['COKE']['lowest']}}</td>
-                                                        <td>UBER, COKE</td>
+                                                        <td>
+                                                            {% for key in data %}
+                                                            {% if data['COKE']['average'] > data[key]['average'] %}
+                                                            {{key}}
+                                                            {% endif %}
+                                                            {% endfor %}
+                                                        </td>
                                                     </tr>
                                                     <tr>
                                                         <td colspan="9"><a href="index.html" class="btn btn-outline-light float-right">Go Back</a></td>

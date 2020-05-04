@@ -223,12 +223,13 @@ def indicators(company):
     for row in result:
         macd.append(float(row['indicator']))
 
-    
+
     return render_template('indicators.html', company = company, time = dates, roc = roc, obv = obv, macd = macd)
 
 @app.route('/historical.html<company>')
 @login_required
 def historical(company):
+    data = []
     if company == "BRK-B":
         company = "BRKB"
     connection = pymysql.connect(host='localhost',
