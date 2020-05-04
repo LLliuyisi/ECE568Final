@@ -77,7 +77,7 @@ def insertDatabase(TableName):
 
 
 if __name__ == '__main__':
-    StocksList = ["FB", "MSFT", "AMZN", "GOOG", "AAPL", "GE", "UBER", "SBUX", "COKE", "NKE"]
+    StocksList = ['FB', 'MSFT', 'AMZN', 'GOOG', 'BRKB', 'AAPL', 'GE', 'UBER', 'SBUX', 'COKE']
     for stock in StocksList:
         getRealtime(stock)
         getHistorical(stock)
