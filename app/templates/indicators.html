@@ -69,7 +69,7 @@
                                             <a class="nav-link" href="index.html">GOOG</a>
                                         </li>
                                         <li class="nav-item">
-                                            <a class="nav-link" href="index.html">BRK-B</a>
+                                            <a class="nav-link" href="index.html">NKE</a>
                                         </li>
                                         <li class="nav-item">
                                             <a class="nav-link" href="index.html">AAPL</a>
@@ -153,7 +153,7 @@
                                     <nav aria-label="breadcrumb">
                                         <ol class="breadcrumb">
                                             <li class="breadcrumb-item"><a href="#" class="breadcrumb-link">Information</a></li>
-                                            <li class="breadcrumb-item active" aria-current="page">indicators</li>
+                                            <li class="breadcrumb-item active" aria-current="page">{{company}}</li>
                                         </ol>
                                     </nav>
                                 </div>
@@ -176,7 +176,15 @@
                             <script src="http://g.tbcdn.cn/bui/acharts/1.0.32/acharts-min.js"></script>
                             <!-- https://g.alicdn.com/bui/acharts/1.0.29/acharts-min.js -->
 
-                            <script type="text/javascript">var chart = new AChart({
+                            <script type="text/javascript">
+                                var nums = {{time}};
+                                var dates = []
+                                for (i = 0;i < nums.length; i++)
+                                {
+                                    dates.push(new Date(nums[i]));
+                                }
+                                
+                                var chart = new AChart({
                   theme: AChart.Theme.SmoothBase,
                   id: 'canvas',
                   width: 950,
@@ -185,8 +193,8 @@
                     margin: [50, 50, 80] //画板的边距
                   },
                   xAxis: {
-                    categories: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12']
-                  },
+                      categories: dates
+                      },
                   seriesOptions: { //设置多个序列共同的属性
                     lineCfg: { //不同类型的图对应不同的共用属性，lineCfg,areaCfg,columnCfg等，type + Cfg 标示
                       smooth: true
@@ -201,14 +209,118 @@
                   },
                   series: [{
                     name: 'ROC',
-                    data: [7.0, 6.9, 9.5, 14.5, 18.2, 21.5, 25.2, 26.5, 23.3, 18.3, 13.9, 9.6]
-                  }, {
+                    data: {{roc}}
+                    }]
+                });
+
+                chart.render();</script>
+                            <!-- ============================================================== -->
+                            <!-- end recent orders  -->
+                        </div>
+                    </div>
+                    <div class="ecommerce-widget">
+                        <div class="row">
+                            <!-- ============================================================== -->
+                            <!-- ============================================================== -->
+                            <!-- recent orders  -->
+                            <!-- ============================================================== -->
+                            <div class="detail-section">
+                                <div id="canvas">
+                                </div>
+                            </div>
+                            <script src="http://g.tbcdn.cn/bui/acharts/1.0.32/acharts-min.js"></script>
+                            <!-- https://g.alicdn.com/bui/acharts/1.0.29/acharts-min.js -->
+
+                            <script type="text/javascript">
+                                var nums = {{time}};console.log(nums);
+                                var dates = []
+                                for (i = 0;i < nums.length; i++)
+                                {
+                                    dates.push(new Date(nums[i]));
+                                }
+                                console.log(dates);
+                                var chart = new AChart({
+                  theme: AChart.Theme.SmoothBase,
+                  id: 'canvas',
+                  width: 950,
+                  height: 500,
+                  plotCfg: {
+                    margin: [50, 50, 80] //画板的边距
+                  },
+                  xAxis: {
+                      categories: dates
+                      },
+                  seriesOptions: { //设置多个序列共同的属性
+                    lineCfg: { //不同类型的图对应不同的共用属性，lineCfg,areaCfg,columnCfg等，type + Cfg 标示
+                      smooth: true
+                    }
+                  },
+                  tooltip: {
+                    valueSuffix: 'dollar'
+                    /*,
+                                shared : true, //是否多个数据序列共同显示信息
+                                crosshairs : true //是否出现基准线
+                                */
+                  },
+                  series: [{
                     name: 'OBV',
-                    data: [3.9, 4.2, 5.7, 8.5, 11.9, 15.2, 17.0, 16.6, 14.2, 10.3, 6.6, 4.8]
-                  }, {
+                    data: {{obv}}
+                    }]
+                });
+
+                chart.render();</script>
+                            <!-- ============================================================== -->
+                            <!-- end recent orders  -->
+                        </div>
+                    </div>
+                    <div class="ecommerce-widget">
+                        <div class="row">
+                            <!-- ============================================================== -->
+                            <!-- ============================================================== -->
+                            <!-- recent orders  -->
+                            <!-- ============================================================== -->
+                            <div class="detail-section">
+                                <div id="canvas">
+                                </div>
+                            </div>
+                            <script src="http://g.tbcdn.cn/bui/acharts/1.0.32/acharts-min.js"></script>
+                            <!-- https://g.alicdn.com/bui/acharts/1.0.29/acharts-min.js -->
+
+                            <script type="text/javascript">
+                                var nums = {{time}};console.log(nums);
+                                var dates = []
+                                for (i = 0;i < nums.length; i++)
+                                {
+                                    dates.push(new Date(nums[i]));
+                                }
+                                console.log(dates);
+                                var chart = new AChart({
+                  theme: AChart.Theme.SmoothBase,
+                  id: 'canvas',
+                  width: 950,
+                  height: 500,
+                  plotCfg: {
+                    margin: [50, 50, 80] //画板的边距
+                  },
+                  xAxis: {
+                      categories: dates
+                      },
+                  seriesOptions: { //设置多个序列共同的属性
+                    lineCfg: { //不同类型的图对应不同的共用属性，lineCfg,areaCfg,columnCfg等，type + Cfg 标示
+                      smooth: true
+                    }
+                  },
+                  tooltip: {
+                    valueSuffix: 'dollar'
+                    /*,
+                                shared : true, //是否多个数据序列共同显示信息
+                                crosshairs : true //是否出现基准线
+                                */
+                  },
+                  series: [{
                     name: 'MACD',
-                    data: [17.0, 16.9, 19.5, 24.5, 28.2, 31.5, 35.2, 36.5, 33.3, 28.3, 23.9, 19.6]
-                  }]
+                    data: {{macd}}
+                    }]
                 });
 
                 chart.render();</script>

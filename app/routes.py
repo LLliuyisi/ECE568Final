@@ -18,7 +18,8 @@ import plotly.graph_objects as go
 
 company_names = {'FB': 'Facebook', 'MSFT': 'Microsoft', 'AMZN': 'Amazon', 'GOOG': 'Google',
                  'BRKB': 'Berkshire Hathaway', 'BRK-B': 'Berkshire Hathaway', 'AAPL': 'Apple',
-                 'GE': 'General Electric', 'UBER': 'Uber', 'SBUX': 'Starbucks', 'COKE': 'Coca-Cola'}
+                 'GE': 'General Electric', 'UBER': 'Uber', 'SBUX': 'Starbucks', 'COKE': 'Coca-Cola',
+                 'NKE': 'Nike'}
 
 
 
@@ -75,14 +76,14 @@ def query():
             'MSFT': {},
             'AMZN': {},
             'GOOG': {},
-            'BRKB': {},
+            'NKE': {},
             'AAPL': {},
             'GE': {},
             'UBER': {},
             'SBUX': {},
             'COKE': {},
             }
-    stocks = ['FB', 'MSFT', 'AMZN', 'GOOG', 'BRKB', 'AAPL', 'GE', 'UBER', 'SBUX', 'COKE']
+    stocks = ['FB', 'MSFT', 'AMZN', 'GOOG', 'NKE', 'AAPL', 'GE', 'UBER', 'SBUX', 'COKE']
     connection = pymysql.connect(host='localhost',
                                  user='root',
                                  passwd='123',
@@ -183,17 +184,53 @@ def portfolio():
 
     return render_template('portfolio.html', data = stocks, id = current_user.get_id(), companyname = company_names)
 
-@app.route('/indicators.html')
+@app.route('/indicators.html<company>')
 @login_required
-def indicators():
-    return render_template('indicators.html')
+def indicators(company):
+    dates = []
+    roc = []
+    obv = []
+    macd = []
+    connection = pymysql.connect(host='localhost',
+                                 user='root',
+                                 passwd='123',
+                                 db='mydb',
+                                 port=3306,
+                                 cursorclass=pymysql.cursors.DictCursor)
+
+    q = 'SELECT * FROM ' + company + '_roc';
+    cur = connection.cursor()
+    cur.execute(q)
+    result = cur.fetchall()
+    for row in result:
+        year, month, day = row['time'].split('-')
+        t = (int(year), int(month), int(day), 0, 0, 0, 0, 0, 0)
+        dates.append(int(time.mktime(t) * 1000.0))
+
+        roc.append(float(row['indicator']))
+
+    q = 'SELECT * FROM ' + company + '_obv';
+    cur = connection.cursor()
+    cur.execute(q)
+    result = cur.fetchall()
+    for row in result:
+        obv.append(float(row['indicator']))
+
+    q = 'SELECT * FROM ' + company + '_macd';
+    cur = connection.cursor()
+    cur.execute(q)
+    result = cur.fetchall()
+    for row in result:
+        macd.append(float(row['indicator']))
+
+    
+    return render_template('indicators.html', company = company, time = dates, roc = roc, obv = obv, macd = macd)
 
 @app.route('/historical.html<company>')
 @login_required
 def historical(company):
     if company == "BRK-B":
         company = "BRKB"
-    data = []
     connection = pymysql.connect(host='localhost',
                                  user='root',
                                  passwd='123',
@@ -228,7 +265,7 @@ def revise():
         if newStock == 'BRK-B':
             newStock = 'BRKB'
 
-        stocks = ['FB', 'MSFT', 'AMZN', 'GOOG', 'BRKB', 'AAPL', 'GE', 'UBER', 'SBUX', 'COKE']
+        stocks = ['FB', 'MSFT', 'AMZN', 'GOOG', 'NKE', 'AAPL', 'GE', 'UBER', 'SBUX', 'COKE']
         if newStock not in stocks:
             return render_template('error.html')
 

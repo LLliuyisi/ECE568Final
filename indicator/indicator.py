@@ -87,9 +87,9 @@ def MACDIndicator(StockName):
 
 def insertDatabase(com):
     connection = pymysql.connect(host='localhost',
-                                 user='xiaoliu',
+                                 user='root',
                                  passwd='123',
-                                 db='stocks',
+                                 db='mydb',
                                  port=3306,
                                  cursorclass=pymysql.cursors.DictCursor)
     try:
