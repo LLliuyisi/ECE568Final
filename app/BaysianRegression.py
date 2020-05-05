@@ -50,22 +50,23 @@ def baysian_curve_fitting(time, price, test_val):
     variance = math.sqrt((matrix_a * matrix_S * matrix_d)[0][0] + (1 / beta))
 
 
-    print("Predicted Val   : {:.4f}".format(mean))
-    print("Actual Val      : {:.4f}".format(price[-1]))
-    print("Range Prediction : [{:.4f}, {:.4f}]".format(mean - 3 * variance, mean + 3 * variance))
-    print("Absolute Error  : {:.4f}".format(abs(price[-1] - mean)))
-    print("Relative Error  : {:.4f}%".format(abs(price[-1] - mean) / price[-1] * 100))
+    # print("Predicted Val   : {:.4f}".format(mean))
+    # print("Actual Val      : {:.4f}".format(price[-1]))
+    # print("Range Prediction : [{:.4f}, {:.4f}]".format(mean - 3 * variance, mean + 3 * variance))
+    # print("Absolute Error  : {:.4f}".format(abs(price[-1] - mean)))
+    # print("Relative Error  : {:.4f}%".format(abs(price[-1] - mean) / price[-1] * 100))
+    return mean
 
 def find_csv(path):
-    return [f for f in listdir(path) if f.split('.')[-1] == "csv"]
+    return [f for f in listdir(path) if f.split('_')[-1] == "Historical.csv"]
 
-def read_csv(path, name):
-    file = open(path + name, "r")
+def read_csv(csv_path, name):
+    file = open(csv_path + name, "r")
     reader = csv.reader(file)
     time, price = [], []
     date = 0
     for entry in reader:
-        if date > 0 and date <31:
+        if date > 0 and entry[1] is not None:
             # Encode the date into integer from 1 ~ 30
             # skip the 1st row: titles of columns
             time.append(date)
@@ -78,10 +79,12 @@ def read_csv(path, name):
     return time, price
 
 if __name__ == "__main__":
-    csv_path = "/Users/xiaoliu/PycharmProjects/BaysianCurveFitting/"
+    csv_path = "/Users/xiaoliu/PycharmProjects/ECE568Final2/data/"
     files = find_csv(csv_path)
+    # companyNameList = ['FB', 'MSFT', 'AMZN', 'GOOG', 'NKE', 'AAPL', 'GE', 'UBER', 'SBUX', 'COKE']
     for f in files:
-        print(("-" * 5 + f.split(".")[0] + " Summary" + "-" * 20)[:40])
+        # csv = '/Users/xiaoliu/PycharmProjects/ECE568Final2/data/' + com + '_Historical.csv'
+        # print(("-" * 5 + f.split(".")[0] + " Summary" + "-" * 20)[:40])
         time, price = read_csv(csv_path, f)
-        baysian_curve_fitting(time, price, time[-1])
-        print("-" * 20, end = "\n\n\n")
+        print(f.split("_")[0] + " Next Day Value: {:.4f}".format(baysian_curve_fitting(time, price, time[-1])))
+        # print("-" * 20, end = "\n\n\n")
