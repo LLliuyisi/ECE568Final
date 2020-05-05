@@ -1,9 +1,28 @@
 import numpy as np
-from os import listdir
-import csv
 import math
+import pandas as pd
+from sqlalchemy import create_engine
 
-def baysian_curve_fitting(time, price, test_val):
+
+def baysian_curve_fitting(StockName):
+    engine = create_engine('mysql+pymysql://root:123@localhost:3306/stocks')
+    df = pd.read_sql_query(
+        'SELECT * FROM (SELECT * FROM ' + StockName + '_Historical ORDER BY time DESC LIMIT 100) as com ORDER BY time ASC;',
+        engine)
+    newData = df.values.T.tolist()
+    time, price = [], []
+
+
+    date = 0
+    for data in newData:
+        if date > 0 and data[4] is not None:
+            # Encode the date into integer from 1 ~ 30
+            # skip the 1st row: titles of columns
+            time.append(date)
+            price.append(float(data[1]))
+        date += 1
+    test_val = time[-1]
+
     M = 4
     beta = 12
     alpha = 0.1
@@ -57,34 +76,10 @@ def baysian_curve_fitting(time, price, test_val):
     # print("Relative Error  : {:.4f}%".format(abs(price[-1] - mean) / price[-1] * 100))
     return mean
 
-def find_csv(path):
-    return [f for f in listdir(path) if f.split('_')[-1] == "Historical.csv"]
-
-def read_csv(csv_path, name):
-    file = open(csv_path + name, "r")
-    reader = csv.reader(file)
-    time, price = [], []
-    date = 0
-    for entry in reader:
-        if date > 0 and entry[1] is not None:
-            # Encode the date into integer from 1 ~ 30
-            # skip the 1st row: titles of columns
-            time.append(date)
-            price.append(float(entry[1]))
 
 
-        date += 1
-    file.close()
-
-    return time, price
 
 if __name__ == "__main__":
-    csv_path = "/Users/xiaoliu/PycharmProjects/ECE568Final2/data/"
-    files = find_csv(csv_path)
-    # companyNameList = ['FB', 'MSFT', 'AMZN', 'GOOG', 'NKE', 'AAPL', 'GE', 'UBER', 'SBUX', 'COKE']
-    for f in files:
-        # csv = '/Users/xiaoliu/PycharmProjects/ECE568Final2/data/' + com + '_Historical.csv'
-        # print(("-" * 5 + f.split(".")[0] + " Summary" + "-" * 20)[:40])
-        time, price = read_csv(csv_path, f)
-        print(f.split("_")[0] + " Next Day Value: {:.4f}".format(baysian_curve_fitting(time, price, time[-1])))
-        # print("-" * 20, end = "\n\n\n")
+    companyNameList = ['FB', 'MSFT', 'AMZN', 'GOOG', 'NKE', 'AAPL', 'GE', 'UBER', 'SBUX', 'COKE']
+    for com in companyNameList:
+        print(com + " Next Day Value: %s" % (baysian_curve_fitting(com)))

@@ -21,16 +21,20 @@ def LSTMPredict(Stockname):
     # FOR REPRODUCIBILITY
     np.random.seed(7)
 
-    # engine = create_engine('mysql+mysqlconnector://root:123@localhost:3306/stocks')
+    engine = create_engine('mysql+pymysql://root:123@localhost:3306/stocks')
 
-    # df = pd.read_sql_query('SELECT * FROM '+Stockname+'_History_Price', engine)
-    # newData = df.values.T.tolist()
-    # ClosePrice = newData[4]
-    dataset = pd.read_csv('/Users/xiaoliu/PycharmProjects/ECE568Final2/data/' + Stockname + '_Historical.csv', usecols=[1, 2, 3, 4])
+    df = pd.read_sql_query(
+        'SELECT * FROM (SELECT * FROM ' + Stockname + '_Historical ORDER BY time DESC LIMIT 100) as com ORDER BY time ASC;', engine)
+    newData = df.values.T.tolist()
+    print(newData[0])
+    ClosePrice = newData[4]
+    print(ClosePrice)
+    # dataset = pd.read_csv('/Users/xiaoliu/PycharmProjects/ECE568Final2/data/' + Stockname + '_Historical.csv', usecols=[1, 2, 3, 4])
     # print(df)
     # IMPORTING DATASET
     # dataset=df[['R_Price']]
-    dataset.columns = ["open", "high", "low", "close"]
+    dataset = df[['open', 'high', 'low', 'close']]
+    # dataset.columns = ["open", "high", "low", "close"]
     # print(dataset)
     dataset = dataset.apply(pd.to_numeric)
     dataset = dataset.reindex(index=dataset.index[::-1])
@@ -156,12 +160,17 @@ def new_dataset(dataset, step_size):
     return np.array(data_X), np.array(data_Y)
 
 def LoadLSTM(model, Stockname):
-    dataset = pd.read_csv('/Users/xiaoliu/PycharmProjects/ECE568Final2/data/' + Stockname + '_Historical.csv', usecols=[1, 2, 3, 4])
-    dataset.columns = ["open", "high", "low", "close"]
+    engine = create_engine('mysql+pymysql://root:123@localhost:3306/stocks')
 
-    # dataset = dataset[0 : 99] Change input size here
+    df = pd.read_sql_query('SELECT * FROM (SELECT * FROM ' + Stockname + '_Historical ORDER BY time DESC LIMIT 100) as com ORDER BY time ASC;', engine)
+    newData = df.values.T.tolist()
+    # print(newData[0])
+    ClosePrice = newData[4]
+    # print(ClosePrice)
+    print(Stockname + ' Last Day Value: %s' % (ClosePrice[-1]))
     # print('dataset: %s' % (dataset))
 
+    dataset = df[['open', 'high', 'low', 'close']]
     dataset = dataset.apply(pd.to_numeric)
     dataset = dataset.reindex(index=dataset.index[::-1])
     # CREATING OWN INDEX FOR FLEXIBILITY
@@ -201,9 +210,7 @@ def LoadLSTM(model, Stockname):
 
 def main():
     companyNameList = ['FB', 'MSFT', 'AMZN', 'GOOG', 'NKE', 'AAPL', 'GE', 'UBER', 'SBUX', 'COKE']
-    # print(companyNameList)
-    # print("Please input the company name: ")
-    # name = input()
+    # companyNameList = ['FB']
     # LSTMPredict(name)
     for com in companyNameList:
         # Train models and save them
@@ -213,4 +220,4 @@ def main():
         print(com + " Next Day Value: %f" % (LoadLSTM(model, com)))
 
 if __name__ == '__main__':
-	main()
+    main()
