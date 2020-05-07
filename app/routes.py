@@ -13,6 +13,14 @@ import pymysql
 import csv
 import time
 
+from keras.models import load_model
+from app.LSTM1K import LoadLSTM
+from app.SVM import SVMPredict
+from app.BaysianRegression import baysian_curve_fitting
+from keras import backend
+
+
+
 import plotly.graph_objects as go
 
 
@@ -84,7 +92,7 @@ def query():
     connection = pymysql.connect(host='localhost',
                                  user='root',
                                  passwd='123',
-                                 db='stocks',
+                                 db='mydb',
                                  port=3306,
                                  cursorclass=pymysql.cursors.DictCursor)
     cur = connection.cursor()
@@ -125,7 +133,7 @@ def realtime(company):
     connection = pymysql.connect(host='localhost',
                                  user='root',
                                  passwd='123',
-                                 db='stocks',
+                                 db='mydb',
                                  port=3306,
                                  cursorclass=pymysql.cursors.DictCursor)
 
@@ -151,10 +159,19 @@ def realtime(company):
 
     return render_template('realtime.html', data=data, company=company)
 
-@app.route('/predictions.html')
+@app.route('/predictions.html<company>')
 @login_required
-def predictions():
-    return render_template('predictions.html')
+def predictions(company):
+
+    backend.clear_session()
+    model = load_model('models/' + company + '_LSTM.h5', compile = False)
+    lstm = LoadLSTM(model, company)
+    backend.clear_session()
+    
+    svm = SVMPredict(company)
+    bayes = baysian_curve_fitting(company)
+
+    return render_template('predictions.html', company = company, companyname = company_names, lstm = round(lstm,2), svm = round(svm,2), bayes =round(bayes,2))
 
 @app.route('/portfolio.html', methods=['GET', 'POST'])
 @login_required
@@ -162,7 +179,7 @@ def portfolio():
     connection = pymysql.connect(host='localhost',
                                  user='root',
                                  passwd='123',
-                                 db='stocks',
+                                 db='mydb',
                                  port=3306,
                                  cursorclass=pymysql.cursors.DictCursor)
 
@@ -189,7 +206,7 @@ def indicators(company):
     connection = pymysql.connect(host='localhost',
                                  user='root',
                                  passwd='123',
-                                 db='stocks',
+                                 db='mydb',
                                  port=3306,
                                  cursorclass=pymysql.cursors.DictCursor)
 
@@ -225,15 +242,11 @@ def indicators(company):
 @login_required
 def historical(company):
     data = []
-<<<<<<< HEAD
-    if company == "BRK-B":
-        company = "BRKB"
-=======
->>>>>>> e3b15cd60b78974019097f08d547a7b64906c194
+
     connection = pymysql.connect(host='localhost',
                                  user='root',
                                  passwd='123',
-                                 db='stocks',
+                                 db='mydb',
                                  port=3306,
                                  cursorclass=pymysql.cursors.DictCursor)
 
@@ -269,7 +282,7 @@ def revise():
         connection = pymysql.connect(host='localhost',
                                      user='root',
                                      passwd='123',
-                                     db='stocks',
+                                     db='mydb',
                                      port=3306,
                                      cursorclass=pymysql.cursors.DictCursor)
         
@@ -293,7 +306,7 @@ def delete(company, userid):
     connection = pymysql.connect(host='localhost',
                                  user='root',
                                  passwd='123',
-                                 db='stocks',
+                                 db='mydb',
                                  port=3306,
                                  cursorclass=pymysql.cursors.DictCursor)
 

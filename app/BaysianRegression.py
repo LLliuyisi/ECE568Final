@@ -5,7 +5,7 @@ from sqlalchemy import create_engine
 
 
 def baysian_curve_fitting(StockName):
-    engine = create_engine('mysql+pymysql://root:123@localhost:3306/stocks')
+    engine = create_engine('mysql+pymysql://root:123@localhost:3306/mydb')
     df = pd.read_sql_query(
         'SELECT * FROM (SELECT * FROM ' + StockName + '_Historical ORDER BY time DESC LIMIT 100) as com ORDER BY time ASC;',
         engine)

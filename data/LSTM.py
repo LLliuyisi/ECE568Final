@@ -9,32 +9,27 @@ import math
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.metrics import mean_squared_error
 from sklearn.metrics import mean_absolute_error
-from keras.models import Sequential
-from keras.layers import Dense, Activation
-from keras.layers import LSTM
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense, Activation
+from tensorflow.keras.layers import LSTM
 from sqlalchemy import create_engine
 import json
-from keras.models import load_model
 
 
 def LSTMPredict(Stockname):
     # FOR REPRODUCIBILITY
     np.random.seed(7)
 
-    engine = create_engine('mysql+pymysql://root:123@localhost:3306/stocks')
+    # engine = create_engine('mysql+mysqlconnector://root:123@localhost:3306/stocks')
 
-    df = pd.read_sql_query(
-        'SELECT * FROM (SELECT * FROM ' + Stockname + '_Historical ORDER BY time DESC LIMIT 100) as com ORDER BY time ASC;', engine)
-    newData = df.values.T.tolist()
-    print(newData[0])
-    ClosePrice = newData[4]
-    print(ClosePrice)
-    # dataset = pd.read_csv('/Users/xiaoliu/PycharmProjects/ECE568Final2/data/' + Stockname + '_Historical.csv', usecols=[1, 2, 3, 4])
+    # df = pd.read_sql_query('SELECT * FROM '+Stockname+'_History_Price', engine)
+    # newData = df.values.T.tolist()
+    # ClosePrice = newData[4]
+    dataset = pd.read_csv(Stockname + '_Historical.csv', usecols=[1, 2, 3, 4])
     # print(df)
     # IMPORTING DATASET
     # dataset=df[['R_Price']]
-    dataset = df[['open', 'high', 'low', 'close']]
-    # dataset.columns = ["open", "high", "low", "close"]
+    dataset.columns = ["open", "high", "low", "close"]
     # print(dataset)
     dataset = dataset.apply(pd.to_numeric)
     dataset = dataset.reindex(index=dataset.index[::-1])
@@ -144,9 +139,8 @@ def LSTMPredict(Stockname):
     #     print("Complete...")
 
     # SAVE THE MODEL
-    model.save("/Users/xiaoliu/PycharmProjects/ECE568Final2/models/" + Stockname + "_LSTM.h5")
-    del model
-    print("Saved model " + Stockname + "_LSTM to disk")
+    model.save(Stockname + "_LSTM.h5")
+    print("Saved model" + Stockname + "_LSTM to disk")
 
 
 # FUNCTION TO CREATE 1D DATA INTO TIME SERIES DATASET
@@ -159,65 +153,16 @@ def new_dataset(dataset, step_size):
         data_Y.append(dataset[i + step_size, 0])
     return np.array(data_X), np.array(data_Y)
 
-def LoadLSTM(model, Stockname):
-    engine = create_engine('mysql+pymysql://root:123@localhost:3306/mydb')
-
-    df = pd.read_sql_query('SELECT * FROM (SELECT * FROM ' + Stockname + '_Historical ORDER BY time DESC LIMIT 100) as com ORDER BY time ASC;', engine)
-    newData = df.values.T.tolist()
-    # print(newData[0])
-    ClosePrice = newData[4]
-    # print(ClosePrice)
-    print(Stockname + ' Last Day Value: %s' % (ClosePrice[-1]))
-    # print('dataset: %s' % (dataset))
-
-    dataset = df[['open', 'high', 'low', 'close']]
-    dataset = dataset.apply(pd.to_numeric)
-    dataset = dataset.reindex(index=dataset.index[::-1])
-    # CREATING OWN INDEX FOR FLEXIBILITY
-    obs = np.arange(1, len(dataset) + 1, 1)
-
-    OHLC_avg = dataset.mean(axis=1)
-
-    # PREPARATION OF TIME SERIES DATASE
-    OHLC_avg = np.reshape(OHLC_avg.values, (len(OHLC_avg), 1))
-    scaler = MinMaxScaler(feature_range=(0, 1))
-    OHLC_avg = scaler.fit_transform(OHLC_avg)
-
-    # TRAIN-TEST SPLIT
-    train_OHLC = int(len(OHLC_avg) * 0.75)
-    test_OHLC = len(OHLC_avg) - train_OHLC
-    train_OHLC, test_OHLC = OHLC_avg[0:train_OHLC, :], OHLC_avg[train_OHLC:len(OHLC_avg), :]
-
-    # TIME-SERIES DATASET (FOR TIME T, VALUES FOR TIME T+1)
-    testX, testY = new_dataset(test_OHLC, 1)
-
-    # RESHAPING TRAIN AND TEST DATA
-    testX = np.reshape(testX, (testX.shape[0], 1, testX.shape[1]))
-    step_size = 1
-    # print('testX = %s' % testX)
-    testPredict = model.predict(testX)
-    # print('testPredict = %s' % testPredict)
-
-    # DE-NORMALIZING
-    testPredict = scaler.inverse_transform(testPredict)
-    last_val = testPredict[-1]
-    last_val_scaled = last_val / last_val
-    next_val = model.predict(np.reshape(last_val_scaled, (1, 1, 1)))
-    # print(Stockname + " Next Day Value: %f" % (np.asscalar(last_val * next_val)))
-    return np.asscalar(last_val * next_val)
-
-
 
 def main():
     companyNameList = ['FB', 'MSFT', 'AMZN', 'GOOG', 'NKE', 'AAPL', 'GE', 'UBER', 'SBUX', 'COKE']
-    # companyNameList = ['FB']
+    # print(companyNameList)
+    # print("Please input the company name: ")
+    # name = input()
     # LSTMPredict(name)
     for com in companyNameList:
-        # Train models and save them
-        # LSTMPredict(com) # annotate this when just using model
-        # load model
-        model = load_model('models/' + com + '_LSTM.h5')
-        print(com + " Next Day Value: %f" % (LoadLSTM(model, com)))
+        LSTMPredict(com)
+
 
 if __name__ == '__main__':
-    main()
+	main()
