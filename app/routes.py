@@ -1,31 +1,27 @@
 from flask import render_template, request
 from app import app, db
 from app.forms import LoginForm, RegistrationForm
-from flask import render_template, flash, redirect, url_for
+from flask import render_template, flash, redirect, url_for, jsonify
 from flask_login import current_user, login_user, logout_user, login_required
 from app.models import User, Portfolio
 from werkzeug.urls import url_parse
 from sqlalchemy.sql import text
 from data.Data_Collection import getRealtime
+from keras.models import load_model
+from app.LSTM1K import LoadLSTM
+from app.SVM import SVMPredict
+from app.BaysianRegression import baysian_curve_fitting
+from keras import backend
 from datetime import date, timedelta
 import pymysql.cursors
 import pymysql
 import csv
 import time
 
-from keras.models import load_model
-from app.LSTM1K import LoadLSTM
-from app.SVM import SVMPredict
-from app.BaysianRegression import baysian_curve_fitting
-from keras import backend
-
-
-
 import plotly.graph_objects as go
 
 
-company_names = {'FB': 'Facebook', 'MSFT': 'Microsoft', 'AMZN': 'Amazon', 'GOOG': 'Google',
-                 'BRKB': 'Berkshire Hathaway', 'BRK-B': 'Berkshire Hathaway', 'AAPL': 'Apple',
+company_names = {'FB': 'Facebook', 'MSFT': 'Microsoft', 'AMZN': 'Amazon', 'GOOG': 'Google', 'AAPL': 'Apple',
                  'GE': 'General Electric', 'UBER': 'Uber', 'SBUX': 'Starbucks', 'COKE': 'Coca-Cola',
                  'NKE': 'Nike'}
 
@@ -35,7 +31,6 @@ company_names = {'FB': 'Facebook', 'MSFT': 'Microsoft', 'AMZN': 'Amazon', 'GOOG'
 @app.route('/index.html')
 @login_required
 def index():
-
     return render_template('index.html', companyname = company_names)
 
 @app.route('/login.html', methods=['GET', 'POST'])
@@ -92,7 +87,7 @@ def query():
     connection = pymysql.connect(host='localhost',
                                  user='root',
                                  passwd='123',
-                                 db='mydb',
+                                 db='stocks',
                                  port=3306,
                                  cursorclass=pymysql.cursors.DictCursor)
     cur = connection.cursor()
@@ -133,7 +128,7 @@ def realtime(company):
     connection = pymysql.connect(host='localhost',
                                  user='root',
                                  passwd='123',
-                                 db='mydb',
+                                 db='stocks',
                                  port=3306,
                                  cursorclass=pymysql.cursors.DictCursor)
 
@@ -159,19 +154,37 @@ def realtime(company):
 
     return render_template('realtime.html', data=data, company=company)
 
-@app.route('/predictions.html<company>')
-@login_required
-def predictions(company):
-
+# @app.route('/predictions.html<company>')
+@app.route('/predictions/<company>', methods=['GET'])
+# @login_required
+def predictions_api(company):
     backend.clear_session()
-    model = load_model('models/' + company + '_LSTM.h5', compile = False)
+    model = load_model('/Users/xiaoliu/PycharmProjects/ECE568Final2/models/' + company + '_LSTM.h5', compile=False)
     lstm = LoadLSTM(model, company)
     backend.clear_session()
-    
+
     svm = SVMPredict(company)
     bayes = baysian_curve_fitting(company)
 
-    return render_template('predictions.html', company = company, companyname = company_names, lstm = round(lstm,2), svm = round(svm,2), bayes =round(bayes,2))
+    prediction_result = []
+    items = {'company': company,
+              'companyname': company_names[company],
+              'lstm':round(lstm, 2),
+              'svm':round(svm, 2),
+              'bayes': round(bayes, 2)
+    }
+    prediction_result.append(items)
+    prediction_result = dict(data=prediction_result)
+    return jsonify(prediction_result)
+
+    # return render_template('predictions.html', company=company, companyname=company_names, lstm=round(lstm, 2),
+    #                        svm=round(svm, 2), bayes=round(bayes, 2))
+
+@app.route('/predictions.html')
+# @app.route('/predictions.html<company>')
+@login_required
+def predictions():
+    return render_template('predictions.html')
 
 @app.route('/portfolio.html', methods=['GET', 'POST'])
 @login_required
@@ -179,7 +192,7 @@ def portfolio():
     connection = pymysql.connect(host='localhost',
                                  user='root',
                                  passwd='123',
-                                 db='mydb',
+                                 db='stocks',
                                  port=3306,
                                  cursorclass=pymysql.cursors.DictCursor)
 
@@ -206,7 +219,7 @@ def indicators(company):
     connection = pymysql.connect(host='localhost',
                                  user='root',
                                  passwd='123',
-                                 db='mydb',
+                                 db='stocks',
                                  port=3306,
                                  cursorclass=pymysql.cursors.DictCursor)
 
@@ -246,7 +259,7 @@ def historical(company):
     connection = pymysql.connect(host='localhost',
                                  user='root',
                                  passwd='123',
-                                 db='mydb',
+                                 db='stocks',
                                  port=3306,
                                  cursorclass=pymysql.cursors.DictCursor)
 
@@ -282,7 +295,7 @@ def revise():
         connection = pymysql.connect(host='localhost',
                                      user='root',
                                      passwd='123',
-                                     db='mydb',
+                                     db='stocks',
                                      port=3306,
                                      cursorclass=pymysql.cursors.DictCursor)
         
@@ -306,7 +319,7 @@ def delete(company, userid):
     connection = pymysql.connect(host='localhost',
                                  user='root',
                                  passwd='123',
-                                 db='mydb',
+                                 db='stocks',
                                  port=3306,
                                  cursorclass=pymysql.cursors.DictCursor)
 
@@ -316,74 +329,3 @@ def delete(company, userid):
     cur.execute(q)
     connection.commit()
     return redirect('portfolio.html')
-'''
-@app.route('/stocks')
-@login_required
-def stocks():
-
-    return render_template('stocks.html')
-
-@app.route('/stocks/<company>')
-@login_required
-def stock_choose(company):
-
-    return render_template('stock_choose.html', company = company)
-
-@app.route('/stocks/<company>/<option>')
-@login_required
-def stock_plot(company, option):
-    connection = pymysql.connect(host='localhost',
-                                 user='root',
-                                 passwd='123',
-                                 db='mydb',
-                                 port=3306,
-                                 cursorclass=pymysql.cursors.DictCursor)
-    q = 'SELECT * FROM ' + company + '_' + option;
-    cur = connection.cursor()
-    cur.execute(q)
-    result = cur.fetchall()
-    print (result[0])
-    fig = go.Figure()
-
-    time = []
-    open = []
-    high = []
-    low = []
-    close = []
-    volume = []
-    for row in result:
-        time.append(row['time'])
-        open.append(row['open'])
-        high.append(row['high'])
-        low.append(row['low'])
-        close.append(row['close'])
-        volume.append(row['volume'])
-    fig.add_trace(go.Scatter(x = time, y = open, name = 'open'))
-    fig.add_trace(go.Scatter(x = time, y = high, name = 'high'))
-    fig.add_trace(go.Scatter(x = time, y = low, name = 'low'))
-    fig.add_trace(go.Scatter(x = time, y = close, name = 'close'))
-
-    fig.update_layout(title=company + ' ' + option + ' stock',
-                      xaxis_title='Date',
-                      yaxis_title='Price')
-    fig.write_html("app/templates/plot.html")
-    return render_template('stock_plot.html', company = company, option = option)
-
-@app.route('/query', methods=['GET', 'POST'])
-@login_required
-def query():
-    if request.method == 'POST':  # this block is only entered when the form is submitted
-        option = request.form.get('queries')
-        if option == "showall":
-            return render_template('query_response.html', cart = car)
-        elif option == "companies":
-            return render_template('query_response.html', cart=car)
-        else:
-            return render_template('query_response.html', cart=car)
-    return render_template('query.html')
-
-
-
-'''
-
-
